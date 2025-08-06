@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lowongan Pekerjaan - Midaglop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #e0f2fe 0%, #7dd3fc 100%);
+        }
+        .category-btn.active {
+            background-color: #3b82f6; /* bg-blue-600 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header / Navbar (Sama seperti index.html) -->
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html">
+                <img src="assets/logo.png" alt="Midaglop Logo" class="h-11" onerror="this.onerror=null; this.src='https://placehold.co/150x44/3b82f6/ffffff?text=Midaglop';">
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html#lowongan" class="text-gray-600 hover:text-blue-500 transition">Lowongan Pekerjaan</a>
+                <a href="pelatihan.html" class="text-gray-600 hover:text-blue-500 transition">Pelatihan</a>
+                <a href="index.html#mitra" class="text-gray-600 hover:text-blue-500 transition">Mitra</a>
+                <a href="index.html#tentang" class="text-gray-600 hover:text-blue-500 transition">Tentang Kami</a>
+                <a href="index.html#berita" class="text-gray-600 hover:text-blue-500 transition">Berita</a>
+            </div>
+            <a href="lowongan.html" class="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Submit Lowongan</a>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="index.html#lowongan" class="block py-2 text-gray-600 hover:text-blue-500">Lowongan Pekerjaan</a>
+            <a href="pelatihan.html" class="block py-2 text-gray-600 hover:text-blue-500">Pelatihan</a>
+            <a href="index.html#mitra" class="block py-2 text-gray-600 hover:text-blue-500">Mitra</a>
+            <a href="index.html#tentang" class="block py-2 text-gray-600 hover:text-blue-500">Tentang Kami</a>
+            <a href="index.html#berita" class="block py-2 text-gray-600 hover:text-blue-500">Berita</a>
+            <a href="lowongan.html" class="block mt-2 text-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Submit Lowongan</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Judul dan Search Bar -->
+        <section class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Temukan Peluang Karir Anda</h1>
+            <p class="text-gray-500 max-w-2xl mx-auto">Gunakan pencarian atau filter kategori untuk menemukan pekerjaan yang paling sesuai untuk Anda.</p>
+            <div class="mt-8 max-w-xl mx-auto">
+                <input type="text" id="search-input" placeholder="Cari berdasarkan posisi pekerjaan..." class="w-full px-5 py-3 border border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </section>
+
+        <!-- Filter Kategori -->
+        <section class="mb-12">
+            <h2 class="text-lg font-semibold text-center mb-4 text-gray-600">Filter Berdasarkan Kategori</h2>
+            <div id="category-filters" class="flex flex-wrap justify-center gap-3">
+                <!-- Kategori akan dimuat di sini oleh JavaScript -->
+                <p class="text-gray-400">Memuat kategori...</p>
+            </div>
+        </section>
+
+        <!-- Daftar Lowongan -->
+        <section>
+            <div id="job-listings-all" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Hasil pencarian lowongan akan dimuat di sini -->
+                <div class="text-center col-span-full py-12">
+                    <p class="text-gray-500">Memuat semua lowongan...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Sama seperti index.html) -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-12">
+            <div class="mt-8 border-t border-gray-700 pt-6 text-center text-gray-500">
+                &copy; <span id="current-year"></span> PT Mirai Darutama Global Persada. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Job Detail Modal (Sama seperti index.html) -->
+    <div id="job-detail-modal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95">
+            <!-- Konten modal akan diisi oleh JavaScript -->
+        </div>
+    </div>
+
+    <script type="module" src="server/lowongan.js"></script>
+</body>
+</html>

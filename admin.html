@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Midaglop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-track { background: #f1f1f1; }
+        .modal-content::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        .modal-content::-webkit-scrollbar-thumb:hover { background: #555; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Admin Panel Midaglop</h1>
+            <a href="index.html" class="text-sm text-blue-500 hover:underline">Lihat Situs Publik</a>
+        </div>
+    </nav>
+    
+    <main class="container mx-auto px-6 py-8">
+
+        <!-- Bagian Kelola Kategori -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <section id="admin-kategori-pekerjaan">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-700">Kategori Pekerjaan</h2>
+                    <button id="add-job-category-button" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 transition text-sm">Tambah</button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <ul id="job-category-list" class="divide-y divide-gray-200"></ul>
+                </div>
+            </section>
+            <section id="admin-kategori-berita">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-700">Kategori Berita</h2>
+                    <button id="add-news-category-button" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 transition text-sm">Tambah</button>
+                </div>
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <ul id="news-category-list" class="divide-y divide-gray-200"></ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- Bagian Kelola Lowongan Pekerjaan -->
+        <section id="admin-lowongan" class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-700">Kelola Lowongan Pekerjaan</h2>
+                <button id="add-job-button" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition">Tambah Lowongan</button>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="w-full whitespace-nowrap">
+                    <thead class="bg-gray-50">
+                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posisi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="job-admin-table" class="bg-white divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Bagian Kelola Pelatihan -->
+        <section id="admin-pelatihan" class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-700">Kelola Pelatihan</h2>
+                <button id="add-training-button" class="bg-purple-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-purple-600 transition">Tambah Pelatihan</button>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="w-full whitespace-nowrap">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Pelatihan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe Program</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tingkat</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="training-admin-table" class="bg-white divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Bagian Kelola Berita -->
+        <section id="admin-berita">
+             <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-700">Kelola Berita</h2>
+                <button id="add-news-button" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition">Tambah Berita</button>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="w-full whitespace-nowrap">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Terbit</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="news-admin-table" class="bg-white divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Modal untuk Tambah/Edit Lowongan -->
+    <div id="job-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 id="job-modal-title" class="text-xl font-semibold"></h3>
+                <div id="job-loader" class="loader hidden"></div>
+            </div>
+            <form id="job-form" class="modal-content max-h-[75vh] overflow-y-auto">
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="hidden" id="job-id">
+                    <input type="hidden" id="existing-logo-url">
+                    <input type="hidden" id="existing-backdrop-url">
+                    <div>
+                        <label for="posisi" class="block text-sm font-medium text-gray-700">Posisi</label>
+                        <input type="text" id="posisi" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="nama_perusahaan" class="block text-sm font-medium text-gray-700">Nama Perusahaan</label>
+                        <input type="text" id="nama_perusahaan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                     <div>
+                        <label for="job-kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
+                        <select id="job-kategori" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></select>
+                    </div>
+                    <div>
+                        <label for="tipe_pekerjaan" class="block text-sm font-medium text-gray-700">Tipe Pekerjaan</label>
+                        <select id="tipe_pekerjaan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Magang">Magang</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="job-lokasi" class="block text-sm font-medium text-gray-700">Lokasi</label>
+                        <input type="text" id="job-lokasi" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    <div>
+                        <label for="gaji" class="block text-sm font-medium text-gray-700">Gaji</label>
+                        <input type="text" id="gaji" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    <div>
+                        <label for="logo_perusahaan_upload" class="block text-sm font-medium text-gray-700">Upload Logo Perusahaan</label>
+                        <input type="file" id="logo_perusahaan_upload" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label for="backdrop_upload" class="block text-sm font-medium text-gray-700">Upload Backdrop/Header</label>
+                        <input type="file" id="backdrop_upload" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi Singkat</label>
+                        <textarea id="deskripsi" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="kualifikasi" class="block text-sm font-medium text-gray-700">Kualifikasi (satu per baris)</label>
+                        <textarea id="kualifikasi" rows="5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="benefit" class="block text-sm font-medium text-gray-700">Benefit (satu per baris)</label>
+                        <textarea id="benefit" rows="5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    </div>
+                     <div class="md:col-span-2">
+                        <label for="is_active" class="flex items-center">
+                            <input type="checkbox" id="is_active" class="rounded border-gray-300 text-blue-600 shadow-sm">
+                            <span class="ml-2 text-sm text-gray-600">Aktifkan Lowongan</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
+                    <button type="button" id="cancel-job-button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-blue-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal untuk Tambah/Edit Berita -->
+    <div id="news-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 id="news-modal-title" class="text-xl font-semibold"></h3>
+                <div id="news-loader" class="loader hidden"></div>
+            </div>
+            <form id="news-form">
+                <div class="p-6 space-y-4">
+                    <input type="hidden" id="news-id">
+                    <input type="hidden" id="existing-news-image-url">
+                    <div>
+                        <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
+                        <input type="text" id="judul" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="news-kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
+                        <select id="news-kategori" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></select>
+                    </div>
+                    <div>
+                        <label for="tanggal_berita" class="block text-sm font-medium text-gray-700">Tanggal Terbit</label>
+                        <input type="date" id="tanggal_berita" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="gambar_upload" class="block text-sm font-medium text-gray-700">Upload Gambar</label>
+                        <input type="file" id="gambar_upload" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                    </div>
+                    <div>
+                        <label for="news-deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea id="news-deskripsi" rows="5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
+                    <button type="button" id="cancel-news-button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="bg-green-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-green-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal untuk Tambah/Edit Pelatihan -->
+    <div id="training-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 id="training-modal-title" class="text-xl font-semibold"></h3>
+                <div id="training-loader" class="loader hidden"></div>
+            </div>
+            <form id="training-form" class="modal-content max-h-[75vh] overflow-y-auto">
+                <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <input type="hidden" id="training-id">
+                    <input type="hidden" id="existing-training-logo-url">
+                    <input type="hidden" id="existing-training-backdrop-url">
+                    
+                    <div class="md:col-span-2">
+                        <label for="nama_pelatihan" class="block text-sm font-medium text-gray-700">Nama Pelatihan</label>
+                        <input type="text" id="nama_pelatihan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="kejuruan" class="block text-sm font-medium text-gray-700">Kejuruan</label>
+                        <input type="text" id="kejuruan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label for="program_pelatihan" class="block text-sm font-medium text-gray-700">Program Pelatihan</label>
+                        <select id="program_pelatihan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="Gratis">Gratis</option>
+                            <option value="Berbayar">Berbayar</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tipe_pelatihan" class="block text-sm font-medium text-gray-700">Tipe Pelatihan</label>
+                        <select id="tipe_pelatihan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="Online">Online</option>
+                            <option value="Offline">Offline</option>
+                            <option value="Blended">Blended</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="tingkat_kesulitan" class="block text-sm font-medium text-gray-700">Tingkat Kesulitan</label>
+                        <select id="tingkat_kesulitan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="Pemula">Pemula</option>
+                            <option value="Menengah">Menengah</option>
+                            <option value="Ahli">Ahli</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="harga" class="block text-sm font-medium text-gray-700">Harga</label>
+                        <input type="number" id="harga" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="0">
+                    </div>
+                    <div>
+                        <label for="rating" class="block text-sm font-medium text-gray-700">Rating (1.0 - 5.0)</label>
+                        <input type="number" id="rating" step="0.1" min="1" max="5" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    <div>
+                        <label for="tipe_mitra" class="block text-sm font-medium text-gray-700">Tipe Mitra</label>
+                        <select id="tipe_mitra" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="Pemerintah">Pemerintah</option>
+                            <option value="Swasta">Swasta</option>
+                            <option value="Industrial">Industrial</option>
+                            <option value="Komunitas">Komunitas</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="training-lokasi" class="block text-sm font-medium text-gray-700">Lokasi</label>
+                        <input type="text" id="training-lokasi" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                     <div>
+                        <label for="training_logo_upload" class="block text-sm font-medium text-gray-700">Upload Logo</label>
+                        <input type="file" id="training_logo_upload" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                    </div>
+                    <div>
+                        <label for="training_backdrop_upload" class="block text-sm font-medium text-gray-700">Upload Backdrop</label>
+                        <input type="file" id="training_backdrop_upload" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label for="training_deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea id="training_deskripsi" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label for="training_is_active" class="flex items-center">
+                            <input type="checkbox" id="training_is_active" class="rounded border-gray-300 text-purple-600 shadow-sm">
+                            <span class="ml-2 text-sm text-gray-600">Aktifkan Pelatihan</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
+                    <button type="button" id="cancel-training-button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="bg-purple-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-purple-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal untuk Kategori (Pekerjaan & Berita) -->
+    <div id="category-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-6 border-b">
+                <h3 id="category-modal-title" class="text-xl font-semibold"></h3>
+            </div>
+            <form id="category-form">
+                <div class="p-6">
+                    <input type="hidden" id="category-id">
+                    <input type="hidden" id="category-type">
+                    <div>
+                        <label for="nama_kategori" class="block text-sm font-medium text-gray-700">Nama Kategori</label>
+                        <input type="text" id="nama_kategori" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
+                    <button type="button" id="cancel-category-button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="bg-gray-800 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-gray-900">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = 'https://koubjqxoolmevvsluven.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvdWJqcXhvb2xtZXZ2c2x1dmVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NDc3ODIsImV4cCI6MjA3MDAyMzc4Mn0.FzTWIeq1AV_Qtdight8-E3AhsdDMBXSvvV1N7mskHnE';
+        const BUCKET_NAME = 'assets';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // =================================================================================
+        // Helper Functions
+        // =================================================================================
+        const showLoader = (loaderId) => document.getElementById(loaderId).classList.remove('hidden');
+        const hideLoader = (loaderId) => document.getElementById(loaderId).classList.add('hidden');
+
+        async function uploadFile(file) {
+            if (!file) return { data: null, error: null };
+            const filePath = `public/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+            const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(filePath, file);
+            if (error) {
+                console.error('Upload error:', error);
+                return { data: null, error };
+            }
+            const { data: publicUrlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
+            return { data: { publicUrl: publicUrlData.publicUrl }, error: null };
+        }
+
+        // =================================================================================
+        // Kategori Logic (Generic)
+        // =================================================================================
+        async function loadCategories(type) {
+            const tableName = type === 'job' ? 'kategori_pekerjaan' : 'kategori_berita';
+            const listElement = document.getElementById(`${type}-category-list`);
+            const { data, error } = await supabase.from(tableName).select('*').order('nama_kategori');
+            
+            if (error) {
+                listElement.innerHTML = `<li class="p-4 text-center text-red-500">Error: ${error.message}</li>`;
+                return;
+            }
+            if (data.length === 0) {
+                listElement.innerHTML = `<li class="p-4 text-center text-gray-500">Belum ada kategori.</li>`;
+                return;
+            }
+            listElement.innerHTML = data.map(cat => `
+                <li class="p-3 flex justify-between items-center text-sm">
+                    <span>${cat.nama_kategori}</span>
+                    <div class="space-x-2">
+                        <button data-action="edit-category" data-id="${cat.id}" data-name="${cat.nama_kategori}" data-type="${type}" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                        <button data-action="delete-category" data-id="${cat.id}" data-type="${type}" class="text-red-600 hover:text-red-900">Hapus</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        async function populateCategoryDropdown(type) {
+            const tableName = type === 'job' ? 'kategori_pekerjaan' : 'kategori_berita';
+            const selectElement = document.getElementById(`${type === 'job' ? 'job' : 'news'}-kategori`);
+            const { data, error } = await supabase.from(tableName).select('nama_kategori').order('nama_kategori');
+            if (error) return;
+            selectElement.innerHTML = '<option value="">Pilih Kategori</option>' + data.map(cat => `<option value="${cat.nama_kategori}">${cat.nama_kategori}</option>`).join('');
+        }
+
+        function openCategoryModal(type, category = null) {
+            const form = document.getElementById('category-form');
+            form.reset();
+            document.getElementById('category-type').value = type;
+            if (category) {
+                document.getElementById('category-modal-title').textContent = 'Edit Kategori';
+                document.getElementById('category-id').value = category.id;
+                document.getElementById('nama_kategori').value = category.name;
+            } else {
+                document.getElementById('category-modal-title').textContent = 'Tambah Kategori Baru';
+                document.getElementById('category-id').value = '';
+            }
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('category-modal').classList.add('hidden');
+        }
+
+        async function handleCategoryFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('category-id').value;
+            const type = document.getElementById('category-type').value;
+            const tableName = type === 'job' ? 'kategori_pekerjaan' : 'kategori_berita';
+            const categoryData = {
+                nama_kategori: document.getElementById('nama_kategori').value
+            };
+
+            const { error } = id
+                ? await supabase.from(tableName).update(categoryData).eq('id', id)
+                : await supabase.from(tableName).insert([categoryData]);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                closeCategoryModal();
+                loadCategories(type);
+            }
+        }
+
+        // =================================================================================
+        // Lowongan Pekerjaan Logic
+        // =================================================================================
+        async function loadAdminJobs() {
+            const tbody = document.getElementById('job-admin-table');
+            const { data, error } = await supabase.from('lowongan_pekerjaan').select('*').order('created_at', { ascending: false });
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Error: ${error.message}</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.length === 0
+                ? `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada lowongan.</td></tr>`
+                : data.map(job => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">${job.posisi}</td>
+                        <td class="px-6 py-4">${job.tipe_pekerjaan || '-'}</td>
+                        <td class="px-6 py-4">${job.lokasi}</td>
+                        <td class="px-6 py-4"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${job.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${job.is_active ? 'Aktif' : 'Nonaktif'}</span></td>
+                        <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" data-action="edit-job" data-id="${job.id}">Edit</button>
+                            <button class="text-red-600 hover:text-red-900" data-action="delete-job" data-id="${job.id}">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        async function openJobModal(job = null) {
+            await populateCategoryDropdown('job');
+            const form = document.getElementById('job-form');
+            form.reset();
+            
+            if (job) {
+                document.getElementById('job-modal-title').textContent = 'Edit Lowongan';
+                document.getElementById('job-id').value = job.id;
+                document.getElementById('posisi').value = job.posisi;
+                document.getElementById('nama_perusahaan').value = job.nama_perusahaan;
+                document.getElementById('job-kategori').value = job.kategori;
+                document.getElementById('tipe_pekerjaan').value = job.tipe_pekerjaan;
+                document.getElementById('job-lokasi').value = job.lokasi;
+                document.getElementById('gaji').value = job.gaji;
+                document.getElementById('deskripsi').value = job.deskripsi;
+                if (job.detail_pekerjaan) {
+                    document.getElementById('kualifikasi').value = (job.detail_pekerjaan.kualifikasi || []).join('\n');
+                    document.getElementById('benefit').value = (job.detail_pekerjaan.benefit || []).join('\n');
+                }
+                document.getElementById('is_active').checked = job.is_active;
+                document.getElementById('existing-logo-url').value = job.logo_perusahaan_url || '';
+                document.getElementById('existing-backdrop-url').value = job.backdrop_url || '';
+            } else {
+                document.getElementById('job-modal-title').textContent = 'Tambah Lowongan Baru';
+                document.getElementById('job-id').value = '';
+                document.getElementById('is_active').checked = true;
+            }
+            document.getElementById('job-modal').classList.remove('hidden');
+        }
+
+        function closeJobModal() { document.getElementById('job-modal').classList.add('hidden'); }
+
+        async function handleJobFormSubmit(e) {
+            e.preventDefault();
+            showLoader('job-loader');
+            
+            const logoFile = document.getElementById('logo_perusahaan_upload').files[0];
+            const backdropFile = document.getElementById('backdrop_upload').files[0];
+            
+            const [logoResult, backdropResult] = await Promise.all([uploadFile(logoFile), uploadFile(backdropFile)]);
+
+            if (logoResult.error || backdropResult.error) {
+                alert('Gagal mengupload file. Cek konsol untuk detail.');
+                hideLoader('job-loader');
+                return;
+            }
+
+            const id = document.getElementById('job-id').value;
+            const kualifikasiText = document.getElementById('kualifikasi').value;
+            const benefitText = document.getElementById('benefit').value;
+
+            const detailPekerjaan = {
+                kualifikasi: kualifikasiText.split('\n').filter(item => item.trim() !== ''),
+                benefit: benefitText.split('\n').filter(item => item.trim() !== '')
+            };
+
+            const jobData = {
+                posisi: document.getElementById('posisi').value,
+                nama_perusahaan: document.getElementById('nama_perusahaan').value,
+                kategori: document.getElementById('job-kategori').value,
+                tipe_pekerjaan: document.getElementById('tipe_pekerjaan').value,
+                lokasi: document.getElementById('job-lokasi').value,
+                gaji: document.getElementById('gaji').value,
+                deskripsi: document.getElementById('deskripsi').value,
+                detail_pekerjaan: detailPekerjaan,
+                is_active: document.getElementById('is_active').checked,
+                logo_perusahaan_url: logoResult.data?.publicUrl || document.getElementById('existing-logo-url').value,
+                backdrop_url: backdropResult.data?.publicUrl || document.getElementById('existing-backdrop-url').value,
+            };
+
+            const { error } = id 
+                ? await supabase.from('lowongan_pekerjaan').update(jobData).eq('id', id)
+                : await supabase.from('lowongan_pekerjaan').insert([jobData]);
+
+            hideLoader('job-loader');
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                closeJobModal();
+                loadAdminJobs();
+            }
+        }
+
+        // =================================================================================
+        // Berita Logic
+        // =================================================================================
+        async function loadAdminNews() {
+            const tbody = document.getElementById('news-admin-table');
+            const { data, error } = await supabase.from('berita').select('*').order('tanggal_berita', { ascending: false });
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Error: ${error.message}</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.length === 0
+                ? `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada berita.</td></tr>`
+                : data.map(item => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">${item.judul}</td>
+                        <td class="px-6 py-4">${item.kategori || '-'}</td>
+                        <td class="px-6 py-4">${new Date(item.tanggal_berita).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</td>
+                        <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" data-action="edit-news" data-id="${item.id}">Edit</button>
+                            <button class="text-red-600 hover:text-red-900" data-action="delete-news" data-id="${item.id}">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+        
+        async function openNewsModal(news = null) {
+            await populateCategoryDropdown('news');
+            const form = document.getElementById('news-form');
+            form.reset();
+            
+            if (news) {
+                document.getElementById('news-modal-title').textContent = 'Edit Berita';
+                document.getElementById('news-id').value = news.id;
+                document.getElementById('judul').value = news.judul;
+                document.getElementById('news-kategori').value = news.kategori;
+                document.getElementById('news-deskripsi').value = news.deskripsi;
+                document.getElementById('tanggal_berita').value = new Date(news.tanggal_berita).toISOString().split('T')[0];
+                document.getElementById('existing-news-image-url').value = news.gambar_url || '';
+            } else {
+                document.getElementById('news-modal-title').textContent = 'Tambah Berita Baru';
+                document.getElementById('news-id').value = '';
+                document.getElementById('tanggal_berita').value = new Date().toISOString().split('T')[0];
+            }
+            document.getElementById('news-modal').classList.remove('hidden');
+        }
+
+        function closeNewsModal() { document.getElementById('news-modal').classList.add('hidden'); }
+
+        async function handleNewsFormSubmit(e) {
+            e.preventDefault();
+            showLoader('news-loader');
+
+            const imageFile = document.getElementById('gambar_upload').files[0];
+            const imageResult = await uploadFile(imageFile);
+
+            if (imageResult.error) {
+                alert('Gagal mengupload gambar. Cek konsol untuk detail.');
+                hideLoader('news-loader');
+                return;
+            }
+
+            const id = document.getElementById('news-id').value;
+            const newsData = {
+                judul: document.getElementById('judul').value,
+                kategori: document.getElementById('news-kategori').value,
+                deskripsi: document.getElementById('news-deskripsi').value,
+                tanggal_berita: document.getElementById('tanggal_berita').value,
+                gambar_url: imageResult.data?.publicUrl || document.getElementById('existing-news-image-url').value,
+            };
+
+            const { error } = id
+                ? await supabase.from('berita').update(newsData).eq('id', id)
+                : await supabase.from('berita').insert([newsData]);
+
+            hideLoader('news-loader');
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                closeNewsModal();
+                loadAdminNews();
+            }
+        }
+        
+        // =================================================================================
+        // Pelatihan Logic
+        // =================================================================================
+        async function loadAdminTrainings() {
+            const tbody = document.getElementById('training-admin-table');
+            const { data, error } = await supabase.from('pelatihan').select('*').order('created_at', { ascending: false });
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Error: ${error.message}</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.length === 0
+                ? `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada pelatihan.</td></tr>`
+                : data.map(item => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">${item.nama_pelatihan}</td>
+                        <td class="px-6 py-4">${item.program_pelatihan}</td>
+                        <td class="px-6 py-4">${item.tingkat_kesulitan}</td>
+                        <td class="px-6 py-4"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${item.is_active ? 'Aktif' : 'Nonaktif'}</span></td>
+                        <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" data-action="edit-training" data-id="${item.id}">Edit</button>
+                            <button class="text-red-600 hover:text-red-900" data-action="delete-training" data-id="${item.id}">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function openTrainingModal(training = null) {
+            const form = document.getElementById('training-form');
+            form.reset();
+            
+            if (training) {
+                document.getElementById('training-modal-title').textContent = 'Edit Pelatihan';
+                document.getElementById('training-id').value = training.id;
+                document.getElementById('nama_pelatihan').value = training.nama_pelatihan;
+                document.getElementById('kejuruan').value = training.kejuruan;
+                document.getElementById('program_pelatihan').value = training.program_pelatihan;
+                document.getElementById('tipe_pelatihan').value = training.tipe_pelatihan;
+                document.getElementById('tingkat_kesulitan').value = training.tingkat_kesulitan;
+                document.getElementById('harga').value = training.harga;
+                document.getElementById('rating').value = training.rating;
+                document.getElementById('tipe_mitra').value = training.tipe_mitra;
+                document.getElementById('training-lokasi').value = training.lokasi;
+                document.getElementById('training_deskripsi').value = training.deskripsi;
+                document.getElementById('training_is_active').checked = training.is_active;
+                document.getElementById('existing-training-logo-url').value = training.logo_perusahaan_url || '';
+                document.getElementById('existing-training-backdrop-url').value = training.backdrop_url || '';
+            } else {
+                document.getElementById('training-modal-title').textContent = 'Tambah Pelatihan Baru';
+                document.getElementById('training-id').value = '';
+                document.getElementById('training_is_active').checked = true;
+            }
+            document.getElementById('training-modal').classList.remove('hidden');
+        }
+
+        function closeTrainingModal() { document.getElementById('training-modal').classList.add('hidden'); }
+
+        async function handleTrainingFormSubmit(e) {
+            e.preventDefault();
+            showLoader('training-loader');
+
+            const logoFile = document.getElementById('training_logo_upload').files[0];
+            const backdropFile = document.getElementById('training_backdrop_upload').files[0];
+
+            const [logoResult, backdropResult] = await Promise.all([uploadFile(logoFile), uploadFile(backdropFile)]);
+
+            if (logoResult.error || backdropResult.error) {
+                alert('Gagal mengupload file. Cek konsol untuk detail.');
+                hideLoader('training-loader');
+                return;
+            }
+
+            const id = document.getElementById('training-id').value;
+            const trainingData = {
+                nama_pelatihan: document.getElementById('nama_pelatihan').value,
+                kejuruan: document.getElementById('kejuruan').value,
+                program_pelatihan: document.getElementById('program_pelatihan').value,
+                tipe_pelatihan: document.getElementById('tipe_pelatihan').value,
+                tingkat_kesulitan: document.getElementById('tingkat_kesulitan').value,
+                harga: document.getElementById('harga').value || 0,
+                rating: document.getElementById('rating').value || null,
+                tipe_mitra: document.getElementById('tipe_mitra').value,
+                lokasi: document.getElementById('training-lokasi').value,
+                deskripsi: document.getElementById('training_deskripsi').value,
+                is_active: document.getElementById('training_is_active').checked,
+                logo_perusahaan_url: logoResult.data?.publicUrl || document.getElementById('existing-training-logo-url').value,
+                backdrop_url: backdropResult.data?.publicUrl || document.getElementById('existing-training-backdrop-url').value,
+            };
+
+            const { error } = id 
+                ? await supabase.from('pelatihan').update(trainingData).eq('id', id)
+                : await supabase.from('pelatihan').insert([trainingData]);
+
+            hideLoader('training-loader');
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                closeTrainingModal();
+                loadAdminTrainings();
+            }
+        }
+
+        // =================================================================================
+        // Event Listeners Setup
+        // =================================================================================
+        function setupEventListeners() {
+            // Tombol Tambah
+            document.getElementById('add-job-button').addEventListener('click', () => openJobModal());
+            document.getElementById('add-news-button').addEventListener('click', () => openNewsModal());
+            document.getElementById('add-job-category-button').addEventListener('click', () => openCategoryModal('job'));
+            document.getElementById('add-news-category-button').addEventListener('click', () => openCategoryModal('news'));
+            document.getElementById('add-training-button').addEventListener('click', () => openTrainingModal());
+
+            // Tombol Batal di Modal
+            document.getElementById('cancel-job-button').addEventListener('click', closeJobModal);
+            document.getElementById('cancel-news-button').addEventListener('click', closeNewsModal);
+            document.getElementById('cancel-category-button').addEventListener('click', closeCategoryModal);
+            document.getElementById('cancel-training-button').addEventListener('click', closeTrainingModal);
+
+            // Form Submit
+            document.getElementById('job-form').addEventListener('submit', handleJobFormSubmit);
+            document.getElementById('news-form').addEventListener('submit', handleNewsFormSubmit);
+            document.getElementById('category-form').addEventListener('submit', handleCategoryFormSubmit);
+            document.getElementById('training-form').addEventListener('submit', handleTrainingFormSubmit);
+            
+            // Event delegation untuk semua aksi di tabel/list
+            document.body.addEventListener('click', async (e) => {
+                const action = e.target.dataset.action;
+                if (!action) return;
+
+                const id = e.target.dataset.id;
+                
+                // Aksi Kategori
+                if (action === 'edit-category' || action === 'delete-category') {
+                    const type = e.target.dataset.type;
+                    const name = e.target.dataset.name;
+                    const tableName = type === 'job' ? 'kategori_pekerjaan' : 'kategori_berita';
+                    if (action === 'edit-category') {
+                        openCategoryModal(type, { id, name });
+                    } else if (action === 'delete-category') {
+                        if (confirm(`Yakin ingin menghapus kategori ini?`)) {
+                            const { error } = await supabase.from(tableName).delete().eq('id', id);
+                            if (error) alert('Gagal menghapus: ' + error.message);
+                            else loadCategories(type);
+                        }
+                    }
+                }
+                
+                // Aksi Lowongan
+                if (action === 'edit-job' || action === 'delete-job') {
+                    if (action === 'edit-job') {
+                        const { data, error } = await supabase.from('lowongan_pekerjaan').select('*').eq('id', id).single();
+                        if (error) alert('Gagal mengambil data: ' + error.message);
+                        else openJobModal(data);
+                    } else if (action === 'delete-job') {
+                        if (confirm('Yakin ingin menghapus lowongan ini?')) {
+                            const { error } = await supabase.from('lowongan_pekerjaan').delete().eq('id', id);
+                            if (error) alert('Gagal menghapus: ' + error.message);
+                            else loadAdminJobs();
+                        }
+                    }
+                }
+
+                // Aksi Berita
+                if (action === 'edit-news' || action === 'delete-news') {
+                    if (action === 'edit-news') {
+                        const { data, error } = await supabase.from('berita').select('*').eq('id', id).single();
+                        if (error) alert('Gagal mengambil data: ' + error.message);
+                        else openNewsModal(data);
+                    } else if (action === 'delete-news') {
+                        if (confirm('Yakin ingin menghapus berita ini?')) {
+                            const { error } = await supabase.from('berita').delete().eq('id', id);
+                            if (error) alert('Gagal menghapus: ' + error.message);
+                            else loadAdminNews();
+                        }
+                    }
+                }
+
+                // Aksi Pelatihan
+                if (action === 'edit-training' || action === 'delete-training') {
+                    if (action === 'edit-training') {
+                        const { data, error } = await supabase.from('pelatihan').select('*').eq('id', id).single();
+                        if (error) alert('Gagal mengambil data: ' + error.message);
+                        else openTrainingModal(data);
+                    } else if (action === 'delete-training') {
+                        if (confirm('Yakin ingin menghapus pelatihan ini?')) {
+                            const { error } = await supabase.from('pelatihan').delete().eq('id', id);
+                            if (error) alert('Gagal menghapus: ' + error.message);
+                            else loadAdminTrainings();
+                        }
+                    }
+                }
+            });
+        }
+
+        // =================================================================================
+        // Inisialisasi Halaman
+        // =================================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories('job');
+            loadCategories('news');
+            loadAdminJobs();
+            loadAdminNews();
+            loadAdminTrainings();
+            setupEventListeners();
+        });
+
+    </script>
+</body>
+</html>
